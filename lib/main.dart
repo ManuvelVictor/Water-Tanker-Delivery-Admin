@@ -2,23 +2,22 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:water_tanker_admin/screens/login_screen.dart';
+import 'package:water_tanker_admin/states/theme_state.dart';
 import 'blocs/navigation_bloc.dart';
+import 'blocs/theme_bloc.dart';
 import 'firebase_options.dart';
-import 'providers/theme_providers.dart';
-import 'views/login_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final themeProvider = ThemeProvider();
-  await themeProvider.loadThemeFromFirebase();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => themeProvider),
+        BlocProvider(create: (_) => ThemeBloc()),
         BlocProvider(create: (_) => NavigationBloc()),
       ],
       child: const MyApp(),
@@ -31,17 +30,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: _buildLightTheme(themeProvider),
-      darkTheme: _buildDarkTheme(themeProvider),
-      themeMode: themeProvider.themeMode,
-      home: const LoginScreen(),
-    );
+    return BlocBuilder<ThemeBloc, ThemeState>(builder: (context, themeState) {
+      return MaterialApp(
+        title: 'Flutter Demo',
+        theme: _buildLightTheme(),
+        darkTheme: _buildDarkTheme(),
+        themeMode: themeState.themeMode,
+        home: const LoginScreen(),
+      );
+    });
   }
 
-  ThemeData _buildLightTheme(ThemeProvider themeProvider) {
+  ThemeData _buildLightTheme() {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  ThemeData _buildDarkTheme(ThemeProvider themeProvider) {
+  ThemeData _buildDarkTheme() {
     return ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(

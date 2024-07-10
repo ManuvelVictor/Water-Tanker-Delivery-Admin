@@ -2,15 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:water_tanker_admin/events/theme_event.dart';
 import '../blocs/navigation_bloc.dart';
+import '../blocs/theme_bloc.dart';
 import '../events/navigation_event.dart';
-import '../providers/theme_providers.dart';
 import '../states/navigation_state.dart';
+import '../states/theme_state.dart';
 import '../utils/custom_navigation_bar.dart';
 import 'home_screen.dart';
 import 'order_screen.dart';
 import 'profile_screen.dart';
-import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -34,40 +35,42 @@ class MainScreenState extends State<MainScreen> {
       final themeStr = userDoc.data()?['theme'] ?? 'ThemeMode.light';
       final themeMode =
           themeStr == 'ThemeMode.dark' ? ThemeMode.dark : ThemeMode.light;
-      final themeProvider = Provider.of<ThemeProvider>(context, listen: false);
-      themeProvider.setThemeMode(themeMode);
+      context.read<ThemeBloc>().add(SetThemeEvent(themeMode));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
-    final bool isDarkMode = themeProvider.themeMode == ThemeMode.dark;
-    final Color backgroundColor = isDarkMode ? Colors.black : Colors.white;
-    final Color selectedItemColor =
-        isDarkMode ? Colors.blueAccent : Colors.blue;
-    final Color unselectedItemColor = isDarkMode ? Colors.grey : Colors.black;
-
-    return Scaffold(
-      body: BlocBuilder<NavigationBloc, NavigationState>(
-        builder: (context, state) {
-          if (state is HomeState) {
-            return const HomeScreen();
-          } else if (state is OrdersState) {
-            return const OrdersScreen();
-          } else if (state is ProfileState) {
-            return const ProfileScreen();
-          }
-          return Container();
-        },
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        currentIndex: _getCurrentIndex(context),
-        onTap: (index) => _onTabTapped(context, index),
-        backgroundColor: backgroundColor,
-        selectedItemColor: selectedItemColor,
-        unselectedItemColor: unselectedItemColor,
-      ),
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, themeState) {
+        final bool isDarkMode = themeState.themeMode == ThemeMode.dark;
+        final Color backgroundColor = isDarkMode ? Colors.black : Colors.white;
+        final Color selectedItemColor =
+            isDarkMode ? Colors.blueAccent : Colors.blue;
+        final Color unselectedItemColor =
+            isDarkMode ? Colors.grey : Colors.black;
+        return Scaffold(
+          body: BlocBuilder<NavigationBloc, NavigationState>(
+            builder: (context, state) {
+              if (state is HomeState) {
+                return const HomeScreen();
+              } else if (state is OrdersState) {
+                return const OrdersScreen();
+              } else if (state is ProfileState) {
+                return const ProfileScreen();
+              }
+              return Container();
+            },
+          ),
+          bottomNavigationBar: CustomBottomNavigationBar(
+            currentIndex: _getCurrentIndex(context),
+            onTap: (index) => _onTabTapped(context, index),
+            backgroundColor: backgroundColor,
+            selectedItemColor: selectedItemColor,
+            unselectedItemColor: unselectedItemColor,
+          ),
+        );
+      },
     );
   }
 
