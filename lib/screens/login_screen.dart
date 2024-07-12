@@ -39,7 +39,7 @@ class LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    if (email == "manuvelvictor@gmail.com" && password == "Test@123") {
+    if (email == "vic" && password == "test") {
       if (!mounted) return;
 
       Navigator.pushReplacement(
