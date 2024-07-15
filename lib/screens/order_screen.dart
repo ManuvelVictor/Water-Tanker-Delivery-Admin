@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../blocs/order_bloc.dart';
 import '../events/order_event.dart';
 import '../states/order_state.dart';
@@ -108,7 +109,10 @@ class OrdersScreenState extends State<OrdersScreen> {
                                                       );
                                                     },
                                                     child: const Text(
-                                                        'Assign Order'),
+                                                      'Assign Order',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -127,14 +131,17 @@ class OrdersScreenState extends State<OrdersScreen> {
                                                         MaterialPageRoute(
                                                           builder: (context) =>
                                                               TrackOrderScreen(
-                                                            orderId:
+                                                            orderID:
                                                                 order['id'],
                                                           ),
                                                         ),
                                                       );
                                                     },
                                                     child: const Text(
-                                                        'Track Order'),
+                                                      'Track Order',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -224,7 +231,7 @@ class OrdersScreenState extends State<OrdersScreen> {
                                                     MaterialPageRoute(
                                                       builder: (context) =>
                                                           TrackOrderScreen(
-                                                        orderId: order['id'],
+                                                        orderID: order['id'],
                                                       ),
                                                     ),
                                                   );

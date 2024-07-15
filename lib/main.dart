@@ -2,8 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:water_tanker_admin/blocs/track_order_bloc.dart';
 import 'package:water_tanker_admin/screens/login_screen.dart';
 import 'package:water_tanker_admin/states/theme_state.dart';
+
 import 'blocs/navigation_bloc.dart';
 import 'blocs/theme_bloc.dart';
 import 'firebase_options.dart';
@@ -19,6 +21,7 @@ Future<void> main() async {
       providers: [
         BlocProvider(create: (_) => ThemeBloc()),
         BlocProvider(create: (_) => NavigationBloc()),
+        BlocProvider(create: (_) => TrackOrderBloc()),
       ],
       child: const MyApp(),
     ),
